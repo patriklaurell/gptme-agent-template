@@ -95,7 +95,8 @@ function copy_file() {
     # Create target directory if copying a directory
     if [ -d "$src" ]; then
         mkdir -p "$dst"
-        cp -r "$src/"* "$dst/"
+        # Use . to copy all files including hidden ones
+        cp -r "$src/." "$dst/"
     else
         # Ensure parent directory exists for files
         mkdir -p "$(dirname "$dst")"
