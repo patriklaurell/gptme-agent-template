@@ -77,34 +77,46 @@ This will:
 - Any future edits to dotfiles/ automatically apply (via symlinks)
 - If you didn't customize first, the symlinks will point to template files with placeholders
 
-### 4. Enable Systemd Services (If Configured)
+### 4. Load and Verify Systemd Services (CRITICAL - DO NOT SKIP)
 
-If you set up systemd services, you MUST reload systemd and verify they're running:
+⚠️ **IMPORTANT**: After creating the service files, you MUST load them into systemd and verify they're running. Skipping this step means the services won't work!
+
+**Execute these commands IN ORDER:**
 
 ```bash
-# 1. Reload systemd to recognize new service files (REQUIRED)
+# Step 1: Reload systemd daemon (REQUIRED - systemd won't see new files without this)
 systemctl --user daemon-reload
 
-# 2. Enable the timer (starts automatically on boot)
+# Step 2: Enable the timer to start on boot
 systemctl --user enable {{AGENT_NAME}}-autonomous.timer
 
-# 3. Start the timer now
+# Step 3: Start the timer immediately
 systemctl --user start {{AGENT_NAME}}-autonomous.timer
+```
 
-# 4. Verify the timer is active and running
+**Now VERIFY the services are actually running:**
+
+```bash
+# VERIFICATION 1: Check timer status (MUST show "active (waiting)")
 systemctl --user status {{AGENT_NAME}}-autonomous.timer
 
-# 5. List all timers to confirm it's scheduled
+# VERIFICATION 2: List all timers (your timer MUST appear here)
 systemctl --user list-timers
 
-# 6. Check for any errors in logs
+# VERIFICATION 3: Check for errors (MUST show no errors)
 journalctl --user -u {{AGENT_NAME}}-autonomous.timer --since today
 ```
 
-**Expected output:**
-- Status should show "active (waiting)"
-- Timer should appear in list-timers
-- No errors in journal logs
+**REQUIRED Output - You MUST see:**
+- ✅ Status shows "active (waiting)" - NOT "inactive" or "failed"
+- ✅ Timer appears in `list-timers` output with next run time
+- ✅ Journal logs show no errors
+
+**If you see errors or "inactive":**
+1. Check your service file for syntax errors
+2. Verify all placeholders were replaced correctly
+3. Check file paths exist and are correct
+4. Run `systemctl --user status {{AGENT_NAME}}-autonomous.service` for details
 
 ### 5. Test Installation
 
