@@ -79,16 +79,32 @@ This will:
 
 ### 4. Enable Systemd Services (If Configured)
 
-If you set up systemd services:
+If you set up systemd services, you MUST reload systemd and verify they're running:
 
 ```bash
+# 1. Reload systemd to recognize new service files (REQUIRED)
 systemctl --user daemon-reload
+
+# 2. Enable the timer (starts automatically on boot)
 systemctl --user enable {{AGENT_NAME}}-autonomous.timer
+
+# 3. Start the timer now
 systemctl --user start {{AGENT_NAME}}-autonomous.timer
 
-# Check status
+# 4. Verify the timer is active and running
 systemctl --user status {{AGENT_NAME}}-autonomous.timer
+
+# 5. List all timers to confirm it's scheduled
+systemctl --user list-timers
+
+# 6. Check for any errors in logs
+journalctl --user -u {{AGENT_NAME}}-autonomous.timer --since today
 ```
+
+**Expected output:**
+- Status should show "active (waiting)"
+- Timer should appear in list-timers
+- No errors in journal logs
 
 ### 5. Test Installation
 
@@ -108,6 +124,10 @@ You should see the branch validation hooks run.
 - [ ] install.sh executed successfully
 - [ ] Git hooks active and working
 - [ ] Systemd services enabled and running (if using)
+  - [ ] systemctl --user daemon-reload executed
+  - [ ] Timer shows as "active (waiting)" in status
+  - [ ] Timer appears in list-timers output
+  - [ ] No errors in journal logs
 
 ## Notes
 
