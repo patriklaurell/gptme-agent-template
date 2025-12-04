@@ -13,25 +13,41 @@ Configure the dotfiles system for this agent instance by customizing the example
 
 The dotfiles directory contains version-controlled configuration files that need to be customized for this agent and installed to the agent's home directory.
 
+## Important: Customize Before Installing
+
+**You must instantiate and customize configuration files BEFORE running install.sh.**
+
+The install.sh script creates symlinks to files in this directory. If you install first and customize later, the symlinks will point to example files with placeholders, which won't work.
+
 ## Steps
 
-### 1. Customize Systemd Services (Optional)
+### 1. Instantiate Systemd Services (Optional but Recommended)
 
-If you want autonomous operation with systemd:
+For autonomous operation with systemd, you must:
+
+1. **Copy the example files** (removing .example extension)
+2. **Replace ALL placeholders** in the copied files
+3. **Only then** run install.sh
 
 ```bash
 cd dotfiles/.config/systemd/user/
 
-# Copy and rename the example files
+# Copy and rename (this creates the actual service files)
 cp agent-autonomous.service.example {{AGENT_NAME}}-autonomous.service
 cp agent-autonomous.timer.example {{AGENT_NAME}}-autonomous.timer
 
-# Edit the service file and replace placeholders:
-# - {{AGENT_NAME}} → Your agent's name
-# - {{AGENT_HOME}} → Agent's home directory (e.g., /home/myagent)
-# - {{AGENT_REPO}} → Repository name
+# IMPORTANT: Edit both files and replace ALL placeholders:
+# - {{AGENT_NAME}} → Your actual agent name (e.g., "james")
+# - {{AGENT_HOME}} → Full path to home directory (e.g., "/home/james")
+# - {{AGENT_REPO}} → Repository name (e.g., "james")
 
-# Customize the timer schedule as needed
+# Example:
+# If your agent is "james" at /home/james/james:
+# {{AGENT_NAME}} → james
+# {{AGENT_HOME}} → /home/james
+# {{AGENT_REPO}} → james
+
+# Customize the timer schedule in the .timer file as needed
 ```
 
 ### 2. Customize Forbidden Repos (Optional)
@@ -43,9 +59,9 @@ Edit the forbidden patterns for repos where master/main commits should be blocke
 # Update the FORBIDDEN_PATTERNS array with repos where you don't have push access
 ```
 
-### 3. Install Dotfiles
+### 3. Install Dotfiles (After Customization)
 
-Run the install script to create symlinks:
+**Only after completing steps 1-2**, run the install script to create symlinks:
 
 ```bash
 cd dotfiles
@@ -53,9 +69,13 @@ cd dotfiles
 ```
 
 This will:
-- Create symlinks to `~/.config/git/hooks/` and `~/.config/pre-commit/`
-- Configure git globally
+- Create symlinks from `~/.config/` to files in this dotfiles directory
+- Configure git globally to use these hooks
 - Set up pre-commit template directory
+
+**Note**: The symlinks point to files in this repo, so:
+- Any future edits to dotfiles/ automatically apply (via symlinks)
+- If you didn't customize first, the symlinks will point to example files with placeholders
 
 ### 4. Enable Systemd Services (If Configured)
 
