@@ -148,8 +148,22 @@ copy_file lessons/TEMPLATE.md
 copy_file lessons/tools/shell-heredoc.md
 copy_file state
 
-# Copy dotfiles
-copy_file dotfiles
+# Copy dotfiles only for sovereign users
+if [ "$SOVEREIGN_USER" = true ]; then
+    echo "Copying dotfiles (sovereign user mode)..."
+    copy_file dotfiles
+else
+    echo "Stripping dotfiles documentation (not sovereign user)..."
+
+    # Remove dotfiles line from README.md workspace structure
+    perl -i -pe 's/^.*maintains configuration files in.*dotfiles.*\n//' "${TARGET_DIR}/README.md"
+
+    # Remove dotfiles section from README.md key directories
+    perl -i -0pe 's/\*\*\[`dotfiles\/`\].*?(?=\n\*\*\[|$)//s' "${TARGET_DIR}/README.md"
+
+    # Remove entire Dotfiles section from ARCHITECTURE.md
+    perl -i -0pe 's/## Dotfiles\n.*?(?=\n## )/\n/s' "${TARGET_DIR}/ARCHITECTURE.md"
+fi
 
 # Copy templates
 copy_file people/templates/person.md
