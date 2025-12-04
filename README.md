@@ -72,6 +72,7 @@ Then simply follow the instructions in the output.
  - gptme-agent keeps a journal in [`./journal/`](./journal/)
  - gptme-agent keeps a knowledge base in [`./knowledge/`](./knowledge/)
  - gptme-agent maintains profiles of people in [`./people/`](./people/)
+ - gptme-agent maintains configuration files in [`./dotfiles/`](./dotfiles/) that are symlinked to the agent's home directory
  - gptme-agent manages work priorities in [`./state/`](./state/) using the two-queue system (manual + generated)
  - gptme-agent uses scripts in [`./scripts/`](./scripts/) for context generation, task management, and automation
  - gptme-agent can add files to [`gptme.toml`](./gptme.toml) to always include them in their context
@@ -92,3 +93,9 @@ Then simply follow the instructions in the output.
 **[`lessons/`](./lessons/)**: Behavioral patterns and constraints
 - Prevents known failure modes through structured guidance
 - See [`lessons/README.md`](./lessons/README.md) for lesson system documentation
+
+**[`dotfiles/`](./dotfiles/)**: Agent environment configuration
+- Version-controlled configuration files symlinked to agent's home directory
+- Git hooks, systemd services, and other user-level configs
+- Install with: `cd dotfiles && ./install.sh`
+- See [`dotfiles/README.md`](./dotfiles/README.md) for detailed documentation

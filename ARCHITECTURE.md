@@ -13,6 +13,58 @@ This workspace implements a forkable agent architecture, designed to be used as 
 
 For a information about tools used in this workspace, see [`TOOLS.md`](./TOOLS.md).
 
+## Dotfiles
+
+The [`dotfiles/`](./dotfiles/) directory contains version-controlled configuration files for the agent's user environment. These are symlinked to the agent's home directory during installation.
+
+### Purpose
+
+Agents run as their own users (on servers or locally), and need their own configuration. The dotfiles directory:
+- Version controls all agent-specific configurations
+- Makes agent setup reproducible
+- Allows sharing configurations across agent instances
+- Provides a clean separation between workspace code and environment config
+
+### Included Configurations
+
+**Git Workflow** (`.config/git/`):
+- Hooks for branch validation and upstream tracking
+- Pre-commit integration for all repositories
+- Protection against direct commits to master/main in external repos
+
+**Systemd Services** (`.config/systemd/user/`):
+- Example services for autonomous operation
+- Timers for scheduled tasks
+- Can be customized per agent
+
+**Other Configs**:
+- Shell environment settings
+- Editor configurations
+- Any other dotfiles the agent needs
+
+### Installation
+
+```sh
+cd dotfiles
+./install.sh
+```
+
+The install script:
+- Auto-detects agent name from parent directory
+- Creates symlinks to `~/.config/` and other locations
+- Configures git globally
+- Sets up systemd services (if present)
+
+### Customization
+
+Agents should customize their dotfiles as needed:
+1. Add new configuration files to appropriate `.config/` subdirectories
+2. Update `install.sh` if new symlinks are needed
+3. Make files executable if required (`chmod +x`)
+4. Document customizations in `dotfiles/README.md`
+
+See [`dotfiles/README.md`](./dotfiles/README.md) for detailed documentation.
+
 ## Task System
 
 The task system helps to track and manage work effectively across sessions. It consists of:

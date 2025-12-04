@@ -20,9 +20,9 @@ Timer for scheduling autonomous runs. Copy and customize the schedule.
    ```
 
 2. **Replace placeholders in the service file:**
-   - `{{AGENT_NAME}}` → Your agent's name (e.g., "Lofty", "Bob")
-   - `{{AGENT_HOME}}` → Home directory (e.g., "/home/lofty")
-   - `{{AGENT_REPO}}` → Repository name (e.g., "lofty")
+   - `{{AGENT_NAME}}` → Your agent's name (e.g., "MyAgent")
+   - `{{AGENT_HOME}}` → Home directory (e.g., "/home/myagent")
+   - `{{AGENT_REPO}}` → Repository name (e.g., "myagent")
 
 3. **Customize the timer schedule** in the .timer file as needed
 
@@ -30,7 +30,7 @@ Timer for scheduling autonomous runs. Copy and customize the schedule.
    ```bash
    # Reload systemd to recognize new services
    systemctl --user daemon-reload
-   
+
    # Enable and start the timer
    systemctl --user enable <agent-name>-autonomous.timer
    systemctl --user start <agent-name>-autonomous.timer
