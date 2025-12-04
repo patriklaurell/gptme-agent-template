@@ -1,0 +1,16 @@
+[Unit]
+Description={{AGENT_NAME}} Autonomous Run
+After=network.target
+
+[Service]
+Type=oneshot
+WorkingDirectory={{AGENT_HOME}}/{{AGENT_REPO}}
+ExecStart={{AGENT_HOME}}/{{AGENT_REPO}}/scripts/runs/autonomous/autonomous-run.sh
+StandardOutput=journal
+StandardError=journal
+
+# Timeout handled by script itself (50 minutes), but add systemd safety margin
+TimeoutSec=3600
+
+[Install]
+WantedBy=default.target

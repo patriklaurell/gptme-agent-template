@@ -1,0 +1,22 @@
+# Global pre-commit configuration
+# Runs on all repos, before repo-local hooks
+# Installed via install.sh script
+
+repos:
+  - repo: local
+    hooks:
+      - id: validate-branch-base
+        name: Warn if branch not from origin/master
+        entry: ~/.config/git/hooks/validate-branch-base.sh
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [commit]
+
+      - id: validate-worktree-tracking
+        name: Validate worktree upstream tracking
+        entry: ~/.config/git/hooks/validate-worktree-tracking.sh
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [push]

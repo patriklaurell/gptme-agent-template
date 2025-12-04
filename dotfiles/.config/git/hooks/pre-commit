@@ -1,0 +1,33 @@
+#!/bin/bash
+# Pre-commit hook: validates branch base and prevents master commits in external repos
+
+# First, check for master commits in repos without push access
+BRANCH=$(git branch --show-current 2>/dev/null)
+if [ "$BRANCH" = "master" ] || [ "$BRANCH" = "main" ]; then
+    # Get remote URL to identify the repo
+    REMOTE_URL=$(git remote get-url origin 2>/dev/null)
+
+    # Repos where master/main commits are forbidden (external repos without push access)
+    # Customize this list for your agent
+    FORBIDDEN_PATTERNS=(
+        "gptme/gptme"
+        "gptme/gptme-contrib"
+        "ActivityWatch/"
+    )
+
+    for pattern in "${FORBIDDEN_PATTERNS[@]}"; do
+        if [[ "$REMOTE_URL" == *"$pattern"* ]]; then
+            echo "❌ ERROR: Cannot commit directly to $BRANCH in external repo"
+            echo "   Repo: $REMOTE_URL"
+            echo "   Pattern: $pattern"
+            echo ""
+            echo "   Please create a feature branch instead:"
+            echo "   git checkout -b feature-name origin/master"
+            echo ""
+            exit 1
+        fi
+    done
+fi
+
+# Call the branch base validation
+exec "$(dirname "$0")/validate-branch-base.sh" "$@"

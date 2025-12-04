@@ -1,0 +1,17 @@
+[Unit]
+Description={{AGENT_NAME}} Autonomous Run Timer
+Requires=agent-autonomous.service
+
+[Timer]
+# Weekdays: Hourly during working hours (6am-8pm UTC)
+# Customize schedule as needed
+OnCalendar=Mon-Fri *-*-* 06,07,08,09,10,11,12,13,14,15,16,17,18,19,20:00:00
+
+# Weekends: Every 2 hours, 6am-8pm UTC
+OnCalendar=Sat,Sun *-*-* 06,08,10,12,14,16,18,20:00:00
+
+# Add small random delay to avoid exact-hour spikes
+RandomizedDelaySec=300
+
+[Install]
+WantedBy=timers.target
