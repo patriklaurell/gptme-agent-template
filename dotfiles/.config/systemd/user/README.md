@@ -4,19 +4,19 @@ This directory contains example systemd user services for agent autonomous opera
 
 ## Available Examples
 
-### agent-autonomous.service.example
-Service for running autonomous operations. Copy and customize for your agent.
+### agent-autonomous.service.template
+Service template for running autonomous operations. Copy and customize for your agent.
 
-### agent-autonomous.timer.example
-Timer for scheduling autonomous runs. Copy and customize the schedule.
+### agent-autonomous.timer.template
+Timer template for scheduling autonomous runs. Copy and customize the schedule.
 
 ## Setup Instructions
 
-1. **Copy and rename the example files:**
+1. **Copy and rename the template files:**
    ```bash
    cd dotfiles/.config/systemd/user/
-   cp agent-autonomous.service.example <agent-name>-autonomous.service
-   cp agent-autonomous.timer.example <agent-name>-autonomous.timer
+   cp agent-autonomous.service.template <agent-name>-autonomous.service
+   cp agent-autonomous.timer.template <agent-name>-autonomous.timer
    ```
 
 2. **Replace placeholders in the service file:**

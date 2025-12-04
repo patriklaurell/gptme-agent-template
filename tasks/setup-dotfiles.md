@@ -7,7 +7,7 @@ tags: [setup, configuration]
 
 # Setup Dotfiles
 
-Configure the dotfiles system for this agent instance by customizing the example files and installing the symlinks.
+Configure the dotfiles system for this agent instance by customizing the template files and installing the symlinks.
 
 ## Overview
 
@@ -17,7 +17,7 @@ The dotfiles directory contains version-controlled configuration files that need
 
 **You must instantiate and customize configuration files BEFORE running install.sh.**
 
-The install.sh script creates symlinks to files in this directory. If you install first and customize later, the symlinks will point to example files with placeholders, which won't work.
+The install.sh script creates symlinks to files in this directory. If you install first and customize later, the symlinks will point to template files with placeholders, which won't work.
 
 ## Steps
 
@@ -75,7 +75,7 @@ This will:
 
 **Note**: The symlinks point to files in this repo, so:
 - Any future edits to dotfiles/ automatically apply (via symlinks)
-- If you didn't customize first, the symlinks will point to example files with placeholders
+- If you didn't customize first, the symlinks will point to template files with placeholders
 
 ### 4. Enable Systemd Services (If Configured)
 
