@@ -6,10 +6,35 @@ iso_datetime() {
   date -Iseconds 2>/dev/null || date +"%Y-%m-%dT%H:%M:%S%z"
 }
 
+# Parse flags
+SOVEREIGN_USER=false
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --sovereign-user)
+            SOVEREIGN_USER=true
+            shift
+            ;;
+        -*)
+            echo "Unknown option: $1"
+            echo "Usage: $0 [--sovereign-user] <new_agent_workspace> [<new_agent_name>]"
+            echo "Example: $0 --sovereign-user alice-agent Alice"
+            exit 1
+            ;;
+        *)
+            break
+            ;;
+    esac
+done
+
 # Check arguments
 if [ "$#" -ne 1 ] && [ "$#" -ne 2 ]; then
-    echo "Usage: $0 <new_agent_workspace> [<new_agent_name>]"
+    echo "Usage: $0 [--sovereign-user] <new_agent_workspace> [<new_agent_name>]"
+    echo ""
+    echo "Options:"
+    echo "  --sovereign-user    Agent will run in its own Linux user (needs dotfiles setup)"
+    echo ""
     echo "Example: $0 alice-agent Alice"
+    echo "Example: $0 --sovereign-user alice-agent Alice"
     exit 1
 fi
 
@@ -122,6 +147,9 @@ copy_file lessons/TEMPLATE.md
 copy_file lessons/tools/shell-heredoc.md
 copy_file state
 
+# Copy dotfiles
+copy_file dotfiles
+
 # Copy templates
 copy_file people/templates/person.md
 copy_file journal/templates/daily.md
@@ -141,6 +169,20 @@ if [ -f "${TARGET_DIR}/scripts/tasks.py" ]; then
     (cd "${TARGET_DIR}" && ./scripts/tasks.py edit initial-agent-setup --set created $(iso_datetime))
 else
     echo "Note: tasks.py not available - skipping timestamp update (optional tool)"
+fi
+
+# Handle setup-dotfiles task based on sovereign-user flag
+if [ -f "${SOURCE_DIR}/tasks/setup-dotfiles.md" ]; then
+    if [ "$SOVEREIGN_USER" = true ]; then
+        echo "Copying setup-dotfiles task (sovereign user mode)..."
+        cp "${SOURCE_DIR}/tasks/setup-dotfiles.md" "${TARGET_DIR}/tasks/"
+        if [ -f "${TARGET_DIR}/scripts/tasks.py" ]; then
+            (cd "${TARGET_DIR}" && ./scripts/tasks.py edit setup-dotfiles --set created $(iso_datetime))
+        fi
+    else
+        echo "Skipping setup-dotfiles task (not sovereign user)..."
+        # Dotfiles were copied but task is not needed - agent shares user with human
+    fi
 fi
 
 # If pre-commit is installed
